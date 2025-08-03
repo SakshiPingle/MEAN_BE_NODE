@@ -33,18 +33,39 @@ const storage = multer.diskStorage({
 
 
 router.get('/get_post',(req,res,next)=>{
-  // Here you would typically fetch posts from the database
-  Post.find().then(result => {
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.currentpage;
+  console.log("currentPage",currentPage)
+  const postQuery = Post.find();
+  let fetchPost;
+  if(pageSize && currentPage){
+   postQuery
+   .skip(pageSize * (currentPage - 1))
+   .limit(pageSize)  
+  }
+  postQuery.then(result => {
+    fetchPost = result;
+     return Post.countDocuments(); 
+    }).then(count =>{
+    console.log("fetchPost",fetchPost)
     res.status(200).json({
-    message: "Posts fetched successfully",
-    post: result
-  });
-  }).catch(err => {
-    console.error("Error fetching posts:", err);
-    return res.status(500).json({
-      message: "Error fetching posts"
-    });
-  });
+       message: "Posts fetched successfully",
+       count : count,
+       post: fetchPost
+      })  
+    })
+  // Here you would typically fetch posts from the database
+  // Post.find().then(result => {
+  //   res.status(200).json({
+  //   message: "Posts fetched successfully",
+  //   post: result
+  // });
+  // }).catch(err => {
+  //   console.error("Error fetching posts:", err);
+  //   return res.status(500).json({
+  //     message: "Error fetching posts"
+  //   });
+  // });
  
 });
 
@@ -153,6 +174,10 @@ router.get('/get_edit_post/:postId',(req,res,next)=>{
     });
   });
 });
+
+router.get('/post-paginator',(req,res,next)=>{
+
+})
 
 
 
