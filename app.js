@@ -9,9 +9,13 @@ const bodyParser = require('body-parser');
 const path = require('path')
 // FIX: Use __dirname to serve images correctly
 app.use('/images', express.static(path.join(__dirname, 'images')))
-// importing routes
-const postRoutes = require('./routes/post_routes')
+// importing post routes
+const postRoutes = require('./routes/postRouter')
+// importing user routes
+const UserRoutes = require('./routes/userRouter')
 // connecting mongoDB
+console.log("in be")
+
 const mongoose = require('mongoose');
 const mongodb = require('mongodb');
 
@@ -19,8 +23,11 @@ const mongodb_URI = 'mongodb+srv://sakshipingle603:sakshi603@awscluster.wqpjelm.
 app.use(cors()); // Enable CORS for all routes
 app.use(bodyParser.json()); // Parse JSON bodies
 let httpServer = http.createServer(app);
+
 // using post route
 app.use(postRoutes)
+// using user route
+app.use(UserRoutes);
 
 
 // Connecting to MongoDB
