@@ -71,8 +71,8 @@ exports.savePost = (req, res, next) => {
     title: req.body.title,
     content: req.body.content,
     imagePath: url + "/images/" + req.file.filename,
+    creator : req.userData.userId
   });
-  console.log("newPost", newPost);
   newPost
     .save()
     .then((result) => {
@@ -98,12 +98,18 @@ exports.deletePost = (req, res, next) => {
   const postId = req.params.postId;
   console.log("Post ID to delete:", postId);
   // Here you would typically delete the post from the database
-  Post.findByIdAndDelete({ _id: postId })
+  Post.findByIdAndDelete({ _id: postId,creator : req.userData.userId  })
     .then((result) => {
-      console.log("post deleted successfully");
-      return res.status(200).json({
-        message: "Post deleted successfully",
-      });
+      if(result.n > 0){
+        console.log("post deleted successfully");
+        return res.status(200).json({
+          message: "Post deleted successfully",
+        });
+      }else{
+        return res.status(401).json({
+          message: "Not authorised to delete",
+        });
+      }
     })
     .catch((err) => {
       console.error("Error deleting post:", err);
@@ -124,15 +130,22 @@ exports.updatePost = (req, res, next) => {
     title: req.body.title,
     content: req.body.content,
     imagePath: imagePath,
+    creator:req.userData.userId
   });
   // Here you would typically update the post in the database
   console.log("post", post);
-  Post.updateOne({ _id: req.params.postId }, post)
+  Post.updateOne({ _id: req.params.postId , creator : req.userData.userId }, post)
     .then((result) => {
-      console.log("Post updated successfully",result);
-      return res.status(200).json({
-        message: "Post updated successfully",
-      });
+      if(result.nModified > 0){
+        console.log("Post updated successfully",result);
+        return res.status(200).json({
+          message: "Post updated successfully",
+        });
+      }else{
+        return res.status(500).json({
+          message: "Not Authorised to Edit",
+        });
+      }
     })
     .catch((err) => {
       console.error("Error updating post:", err);
