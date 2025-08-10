@@ -43,7 +43,12 @@ exports.getAllPostList = (req, res, next) => {
         count: count,
         post: fetchPost,
       });
+    }).catch(err=>{
+      return res.status(500).json({
+        message : "Error In fetching the post"
+      })
     });
+
   // Here you would typically fetch posts from the database
   // Post.find().then(result => {
   //   res.status(200).json({

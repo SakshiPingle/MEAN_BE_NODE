@@ -33,7 +33,7 @@ exports.userLogin = (req, res, next) => {
     // depending on if the password is coreect or not
       if (!result) {
         return res.status(500).json({
-          message: "Enter correct password",
+          message: "Invalid Credentials",
         });
       }
 
