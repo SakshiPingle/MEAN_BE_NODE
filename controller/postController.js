@@ -102,10 +102,12 @@ exports.savePost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
   const postId = req.params.postId;
   console.log("Post ID to delete:", postId);
+  console.log("req.userData.userId",req.userData.userId)
   // Here you would typically delete the post from the database
-  Post.findByIdAndDelete({ _id: postId,creator : req.userData.userId  })
+  Post.deleteOne({ _id: postId,creator : req.userData.userId  })
     .then((result) => {
-      if(result.n > 0){
+      console.log("result delete", result)
+      if(result.acknowledged == true){
         console.log("post deleted successfully");
         return res.status(200).json({
           message: "Post deleted successfully",
@@ -141,7 +143,8 @@ exports.updatePost = (req, res, next) => {
   console.log("post", post);
   Post.updateOne({ _id: req.params.postId , creator : req.userData.userId }, post)
     .then((result) => {
-      if(result.nModified > 0){
+      console.log("result",result)
+      if(result.acknowledged == true){
         console.log("Post updated successfully",result);
         return res.status(200).json({
           message: "Post updated successfully",

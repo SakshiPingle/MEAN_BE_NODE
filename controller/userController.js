@@ -35,7 +35,9 @@ exports.userLogin = (req, res, next) => {
         return res.status(500).json({
           message: "Invalid Credentials",
         });
-      }
+      } 
+
+      console.log("process.env.jwt", process.env.JWT_KEY)
 
     // 4) if the email and password both are correct 
     // generate the jwt token (json web token)
